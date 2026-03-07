@@ -266,6 +266,7 @@ export class SolanaService {
         merchantWallet: PublicKey,
         encryptedMerchantKey: string
     ) {
+        console.log("called convert merchant usdc to gold")
         if (!process.env.ORO_PARTNER_PRIVATE_KEY) {
             throw new Error("ORO_PARTNER_PRIVATE_KEY missing in .env");
         }
