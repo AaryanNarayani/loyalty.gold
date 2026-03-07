@@ -1711,6 +1711,28 @@
     background: var(--m-bg-main);
     color: var(--m-text-secondary);
     font-family: var(--m-font-body);
+    position: relative;
+    z-index: 100;
+}
+
+.m-loading-logo {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    animation: m-pulse-logo 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.4));
+    z-index: 10;
+}
+
+@keyframes m-pulse-logo {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.05);
+    }
 }
 
 /* --- Flex Utilities --- */

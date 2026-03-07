@@ -395,7 +395,17 @@ export default function MerchantDashboard() {
   };
 
   if (isLoading) {
-    return <div className="m-loading">Loading Merchant Profile...</div>;
+    return (
+      <div className="merchant-root m-loading">
+        <div className="m-dot-grid-bg" />
+        <div className="m-radial-light" />
+        <img 
+          src="/oro.svg" 
+          alt="Loading..." 
+          className="m-loading-logo"
+        />
+      </div>
+    );
   }
 
   const usdcBalance = (merchantData?.balanceUsdc || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
