@@ -54,6 +54,7 @@ export default function MerchantDashboard() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
+  const [showConvertModal, setShowConvertModal] = useState(false);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -736,6 +737,10 @@ export default function MerchantDashboard() {
                               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
                               Withdraw
                             </button>
+                            <button className="m-btn-outline" onClick={() => { setShowConvertModal(true); fetchGoldEstimate(); }} style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', padding: '0.875rem 0.5rem', fontSize: '14px', textTransform: 'initial', letterSpacing: 'normal', border: '1px solid var(--m-gold-primary)', color: 'var(--m-gold-primary)' }}>
+                              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20M2 12h20L12 2z"/></svg>
+                              Manage Pool
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -1343,6 +1348,58 @@ export default function MerchantDashboard() {
               <button style={{ flex: 1, background: "#FAFAFA", color: "#555", border: "1px solid #E6E3DE", borderRadius: 8, padding: "1rem", fontSize: 15, fontWeight: 500, cursor: "pointer", transition: "all 0.2s" }} onMouseOver={(e) => { e.currentTarget.style.background = "#fff"; e.currentTarget.style.color = "#111" }} onMouseOut={(e) => { e.currentTarget.style.background = "#FAFAFA"; e.currentTarget.style.color = "#555" }} onClick={() => setShowDepositModal(false)}>Cancel</button>
               <button className="m-btn-gold" style={{ flex: 1, borderRadius: 8, padding: "1rem", fontSize: 15, fontWeight: 600 }} onClick={() => { handleDeposit(); setShowDepositModal(false); }} disabled={isDepositing || !depositAmount || Number(depositAmount) <= 0}>
                 {isDepositing ? "Depositing..." : "Confirm Deposit"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Pool Composition Modal */}
+      {showConvertModal && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.4)", backdropFilter: "blur(4px)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }} onClick={() => setShowConvertModal(false)}>
+          <div style={{ background: "#FFFFFF", border: "1px solid #E6E3DE", borderRadius: 16, padding: "3rem", width: 500, maxWidth: "100%", boxShadow: "0 20px 40px rgba(0,0,0,0.1)" }} onClick={(e) => e.stopPropagation()}>
+            <h3 style={{ fontSize: "1.75rem", fontWeight: 400, marginBottom: "0.75rem", color: "#111", fontFamily: "var(--m-font-heading)" }}>Pool Composition</h3>
+            <p style={{ color: "#555", fontSize: 15, marginBottom: "2rem", lineHeight: 1.6 }}>
+              Adjust your treasury balance by converting USDC into tokenized Gold.
+            </p>
+
+            <div style={{ background: '#FAFAFA', border: '1px solid #E6E3DE', borderRadius: 8, padding: '1.25rem', marginBottom: '1.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                <span style={{ fontSize: 13, color: '#666' }}>Available USDC</span>
+                <span className="m-font-mono" style={{ fontWeight: 600, fontSize: 15, color: '#111' }}>${(merchantData?.balanceUsdc || 0).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: 13, color: '#666' }}>Live Gold Price</span>
+                <span className="m-font-mono" style={{ fontWeight: 600, fontSize: 15, color: 'var(--m-gold-primary)' }}>
+                  {isEstimating ? "Loading..." : goldEstimate?.data?.estimatedUsdcAmount ? `$${goldEstimate.data.estimatedUsdcAmount.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}/oz` : "—"}
+                </span>
+              </div>
+            </div>
+
+            <div style={{ marginBottom: "2rem" }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                <label style={{ fontSize: 12, textTransform: "uppercase", letterSpacing: "0.05em", color: "#555", fontWeight: 600 }}>Amount to Convert</label>
+                <div style={{ display: 'flex', gap: '6px' }}>
+                  <button type="button" className="m-btn-sm" style={{ padding: '2px 8px', fontSize: '10px' }} onClick={() => setConvertAmount(((merchantData?.balanceUsdc || 0) * 0.25).toFixed(2))}>25%</button>
+                  <button type="button" className="m-btn-sm" style={{ padding: '2px 8px', fontSize: '10px' }} onClick={() => setConvertAmount(((merchantData?.balanceUsdc || 0) * 0.5).toFixed(2))}>50%</button>
+                  <button type="button" className="m-btn-sm" style={{ padding: '2px 8px', fontSize: '10px' }} onClick={() => setConvertAmount((merchantData?.balanceUsdc || 0).toFixed(2))}>Max</button>
+                </div>
+              </div>
+              <div style={{ position: "relative" }}>
+                <span style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)", color: "#888", fontFamily: "var(--m-font-mono)", fontSize: "16px" }}>$</span>
+                <input type="number" className="m-input" value={convertAmount} onChange={(e) => setConvertAmount(e.target.value)} style={{ width: "100%", padding: "1.25rem 1rem 1.25rem 2.5rem", fontSize: "16px", background: "#FFFFFF", border: "1px solid #E6E3DE", borderRadius: 8, color: "#111" }} placeholder="0.00" />
+              </div>
+              {convertAmount && goldEstimate?.data?.estimatedUsdcAmount && Number(convertAmount) > 0 && (
+                <div style={{ marginTop: 12, fontSize: 14, color: 'var(--m-gold-primary)', fontWeight: 500 }}>
+                  ≈ {(Number(convertAmount) / goldEstimate.data.estimatedUsdcAmount).toFixed(6)} oz Gold
+                </div>
+              )}
+            </div>
+
+            <div style={{ display: "flex", gap: "1rem" }}>
+              <button style={{ flex: 1, background: "#FAFAFA", color: "#555", border: "1px solid #E6E3DE", borderRadius: 8, padding: "1rem", fontSize: 15, fontWeight: 500, cursor: "pointer" }} onClick={() => setShowConvertModal(false)}>Cancel</button>
+              <button className="m-btn-gold" style={{ flex: 1, borderRadius: 8, padding: "1rem", fontSize: 15, fontWeight: 600 }} onClick={async () => { await handleConvertToGold(); setShowConvertModal(false); }} disabled={isConverting || !convertAmount || Number(convertAmount) <= 0}>
+                {isConverting ? "Converting..." : "Confirm Conversion"}
               </button>
             </div>
           </div>
