@@ -389,4 +389,36 @@ export class SolanaService {
             goldSignature,
         };
     }
+    static async sendAirdrop(recipientAddress: string, amountInSol: number = 0.005) {
+        try {
+            const connection = new Connection(process.env.RPC_URL!, "confirmed");
+            const partnerPrivateKey = process.env.ORO_PARTNER_PRIVATE_KEY!;
+            const payer = Keypair.fromSecretKey(bs58.decode(partnerPrivateKey));
+
+            const toPublicKey = new PublicKey(recipientAddress);
+
+            const transaction = new Transaction().add(
+                SystemProgram.transfer({
+                    fromPubkey: payer.publicKey,
+                    toPubkey: toPublicKey,
+                    lamports: amountInSol * 1_000_000_000,
+                })
+            );
+
+            console.log(`[Airdrop] Funding ${recipientAddress} with ${amountInSol} SOL...`);
+
+            const signature = await sendAndConfirmTransaction(
+                connection,
+                transaction,
+                [payer]
+            );
+
+            console.log(`[Airdrop] Success! Signature: ${signature}`);
+            return signature;
+
+        } catch (error: any) {
+            console.error('[Airdrop Error]', error.message);
+            throw new Error(`Failed to fund wallet: ${error.message}`);
+        }
+    }
 }

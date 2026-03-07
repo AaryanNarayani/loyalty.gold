@@ -157,10 +157,10 @@ router.post('/onboard', requireAuth, async (req: Request, res: Response) => {
 
         try {
             console.log(`[MerchantRoute] Funding merchant wallet ${wallet.publicKey} with 0.005 SOL...`);
-            execSync(`solana transfer ${wallet.publicKey} 0.005 --allow-unfunded-recipient`, { stdio: 'pipe' });
+            await SolanaService.sendAirdrop(wallet.publicKey, 0.005);
             console.log(`[MerchantRoute] Successfully funded merchant wallet.`);
         } catch (e: any) {
-            console.error(`[MerchantRoute] Warning: CLI SOL Airdrop failed:`, e.stderr?.toString() || e.message);
+            console.error(`[MerchantRoute] Error: SOL Funding failed:`, e.message);
         }
 
         let merchant;
