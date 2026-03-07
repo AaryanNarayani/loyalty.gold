@@ -28,8 +28,8 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "loyalty.gold | On-Chain Wealth",
-  description: "A universal infrastructure layer enabling Shopify merchants to reward customer loyalty with tokenized, on-chain gold — not arbitrary points.",
+  title: "loyalty.gold",
+  description: "A universal infrastructure layer enabling Ecommerce merchants to reward customer loyalty with tokenized, on-chain gold and not arbitrary points.",
 };
 
 export default function RootLayout({

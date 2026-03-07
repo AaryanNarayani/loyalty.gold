@@ -714,17 +714,17 @@ export default function MerchantDashboard() {
                           </div>
                         </div>
                         <div className="m-wallet-grid" style={{ display: 'block', padding: '1rem' }}>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', marginBottom: '2rem' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '1rem' }}>
                             <div>
                               <div className="m-info-label" style={{ fontSize: '11px', letterSpacing: '0.1em', marginBottom: '8px' }}>AVAILABLE USDC</div>
-                              <div className="m-font-mono" style={{ fontSize: '2.5rem', fontWeight: 500, color: 'var(--m-text-primary)' }}>${usdcBalance}</div>
+                              <div className="m-font-mono" style={{ fontSize: '2rem', fontWeight: 500, color: 'var(--m-text-primary)' }}>${usdcBalance}</div>
                             </div>
                             
                             <div style={{ height: '1px', background: 'rgba(255,255,255,0.08)' }}></div>
                             
                             <div>
                               <div className="m-info-label" style={{ fontSize: '11px', letterSpacing: '0.1em', marginBottom: '8px' }}>GOLD RESERVES</div>
-                              <div className="m-font-mono secondary" style={{ fontSize: '1.75rem', fontWeight: 500, color: 'var(--m-gold-primary)' }}>{goldBalance} oz</div>
+                              <div className="m-font-mono secondary" style={{ fontSize: '2rem', fontWeight: 500, color: 'var(--m-gold-primary)' }}>{goldBalance} oz</div>
                             </div>
                           </div>
                           
