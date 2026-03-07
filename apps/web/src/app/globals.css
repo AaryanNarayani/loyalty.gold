@@ -1,0 +1,236 @@
+:root {
+  /* Premium Light Theme Colors */
+  --bg-color: #FAF8F5;
+  /* Soft cream/off-white */
+  --text-main: #2A2A2A;
+  /* Deep charcoal for readability */
+  --text-muted: #6B6B6B;
+
+  /* Gold Palette - Metallic and Rich */
+  --gold-primary: #C5A059;
+  --gold-light: #DFCDA5;
+  --gold-dark: #8C6A2E;
+  --gold-gradient: linear-gradient(135deg, #DFCDA5 0%, #C5A059 50%, #8C6A2E 100%);
+  --gold-gradient-text: linear-gradient(to bottom, #F7E7CE 0%, #C5A059 40%, #8C6A2E 100%);
+
+  /* Accents & Cards */
+  --card-bg: #FFFFFF;
+  --card-border: rgba(197, 160, 89, 0.2);
+  --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+
+  /* Typography Variables */
+  --font-sans: 'Instrument Sans', sans-serif;
+  --font-serif: 'Ortica Linear', 'Georgia', serif;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-6: 2.5rem;
+  --space-8: 4rem;
+
+  /* Radii */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+}
+
+@font-face {
+  font-family: 'Ortica Linear';
+  src: local('Ortica Linear');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography Utility Classes */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-sans);
+  /* Using Sans for headings to match reference, but can use serif for specific accents */
+  font-weight: 500;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.text-gold {
+  color: var(--gold-primary);
+}
+
+.text-gold-gradient {
+  background: var(--gold-gradient-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+  text-shadow: 0px 4px 10px rgba(197, 160, 89, 0.2);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.heading-xl {
+  font-size: clamp(3rem, 8vw, 6rem);
+  letter-spacing: -0.03em;
+  font-weight: 500;
+}
+
+.heading-lg {
+  font-size: 2.5rem;
+}
+
+/* Layout Utilities */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.gap-2 {
+  gap: var(--space-2);
+}
+
+.gap-4 {
+  gap: var(--space-4);
+}
+
+.w-full {
+  width: 100%;
+}
+
+/* Components */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--card-shadow);
+}
+
+.btn-primary {
+  background: var(--gold-gradient);
+  color: #FFFFFF;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(197, 160, 89, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(197, 160, 89, 0.4);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--gold-dark);
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 0.8rem 2rem;
+  border: 1px solid var(--gold-primary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: rgba(197, 160, 89, 0.05);
+  transform: translateY(-2px);
+}
+
+.input-field {
+  background: #FFFFFF;
+  border: 1px solid var(--card-border);
+  color: var(--text-main);
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius-sm);
+  width: 100%;
+  font-family: var(--font-sans);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-field:focus {
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.1);
+}
+
+.header-nav {
+  padding: var(--space-4) 0;
+  margin-bottom: var(--space-8);
+}
+
+.logo {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: var(--text-main);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.logo span {
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-left: 0.5rem;
+  padding-left: 0.5rem;
+  border-left: 1px solid var(--card-border);
+}
+
+/* Background image utility */
+.bg-loyalty {
+  background-image: url('/loyaltygold.png');
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+}

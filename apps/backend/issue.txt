@@ -1,0 +1,46 @@
+Hey i am trying the purchase gold for user and its failing
+
+curl -X POST https://oro-tradebook-devnet.up.railway.app/api/trading/purchases/user \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: e1e584b8-0490-41ab-b245-073fa52da61f" \
+  -d '{
+    "userId": "1KLi3UhcgKcnjcqo1C3RY4rEyzAgqKYas9DVKAs4b3n",
+    "goldAmount": 0.1,
+    "maxUsdcAmount": 550,
+    "co_sign": false,
+    "userAsFeePayer": true
+  }'
+{"success":false,"error":"failed to get token account balance: Invalid param: could not find account"}
+
+The list user gives me this:
+{
+    "success": true,
+    "data": {
+        "users": [
+            {
+                "userId": "1KLi3UhcgKcnjcqo1C3RY4rEyzAgqKYas9DVKAs4b3n",
+                "userPda": "1KLi3UhcgKcnjcqo1C3RY4rEyzAgqKYas9DVKAs4b3n",
+                "kycHash": "G8Yv7r4Q5c6sTFR9354sCM9QfCTh7pbrRKKNAYXr1FpL",
+                "userWalletAddress": "CoNyuxFn7ivG1mhxa4JmwtNu3tdQRJnqRvwcCgwBdRbs",
+                "metadata": {
+                    "tags": [
+                        "test"
+                    ],
+                    "referenceId": "272"
+                },
+                "createdAt": "2026-02-26T09:32:53.618Z",
+                "updatedAt": "2026-02-26T09:32:53.618Z",
+                "balancesManagedByProgram": {
+                    "gold": {
+                        "amount": 0,
+                        "valueUsd": 0
+                    }
+                }
+            }
+            ......
+            .....
+        ]
+    }
+}
+
+I have gold balance in the central vault too.

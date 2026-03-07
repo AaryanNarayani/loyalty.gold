@@ -1,0 +1,786 @@
+/* ============================================================
+   Customer Dashboard — Scoped Styles
+   Minimal, elegant, trustworthy gold rewards experience
+   Shares design tokens with merchant dashboard
+   ============================================================ */
+
+.user-root {
+    --u-bg-main: #F2EFEA;
+    --u-bg-card: #FFFFFF;
+    --u-border: #E6E3DE;
+    --u-border-light: #EDEBE6;
+    --u-text-primary: #1A1A1A;
+    --u-text-secondary: #6F6F6F;
+    --u-text-tertiary: #999999;
+    --u-gold: #D4AF37;
+    --u-gold-dim: rgba(212, 175, 55, 0.6);
+    --u-gold-subtle: rgba(212, 175, 55, 0.1);
+    --u-gold-trace: rgba(212, 175, 55, 0.05);
+    --u-font-heading: var(--font-playfair), 'Playfair Display', serif;
+    --u-font-body: var(--font-instrument), 'Instrument Sans', sans-serif;
+    --u-font-mono: var(--font-jetbrains), 'JetBrains Mono', monospace;
+    --u-radius: 14px;
+    --u-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+
+    font-family: var(--u-font-body);
+    color: var(--u-text-primary);
+    background-color: var(--u-bg-main);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+}
+
+/* --- Background Layers (shared with merchant) --- */
+.u-bg-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background-color: var(--u-bg-main);
+    pointer-events: none;
+}
+
+.u-bg-layer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("https://framerusercontent.com/images/zvhaXqRGIighZueOuPlMK0Gwr84.svg");
+    background-repeat: repeat;
+    background-position: center top;
+    background-size: 5px auto;
+    mix-blend-mode: overlay;
+    opacity: 0.35;
+}
+
+.u-bg-layer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
+    opacity: 0.03;
+    pointer-events: none;
+}
+
+.u-radial {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background: radial-gradient(ellipse at 50% 0%,
+            rgba(255, 255, 255, 0.55) 0%,
+            rgba(255, 255, 255, 0.22) 40%,
+            rgba(255, 255, 255, 0) 70%);
+    pointer-events: none;
+}
+
+/* --- Scrollbar --- */
+.user-root ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.user-root ::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.user-root ::-webkit-scrollbar-thumb {
+    background: #D1D3CD;
+    border-radius: 3px;
+}
+
+.user-root ::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
+/* --- Top Navigation --- */
+.u-topnav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--u-border);
+    margin-bottom: 3rem;
+    position: relative;
+    z-index: 10;
+}
+
+.u-brand {
+    font-family: var(--u-font-heading);
+    font-size: 1.25rem;
+    color: var(--u-gold);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+}
+
+.u-brand-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--u-gold);
+    border-radius: 50%;
+}
+
+.u-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    position: relative;
+}
+
+.u-nav-email {
+    font-size: 13px;
+    color: var(--u-text-secondary);
+}
+
+.u-nav-logout {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--u-text-secondary);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--u-font-body);
+    transition: color 0.15s;
+}
+
+.u-nav-logout:hover {
+    color: var(--u-text-primary);
+}
+
+/* --- Container --- */
+.u-container {
+    max-width: 820px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.u-page-content {
+    padding-bottom: 6rem;
+}
+
+/* --- Card Base --- */
+.u-card {
+    background: var(--u-bg-card);
+    border: 1px solid var(--u-border);
+    border-radius: var(--u-radius);
+    box-shadow: var(--u-shadow);
+    transition: border-color 0.15s;
+}
+
+.u-card:hover {
+    border-color: #D5D2CC;
+}
+
+/* --- Hero Balance Card --- */
+.u-hero {
+    padding: 3rem 2.5rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.u-hero::before {
+    content: "";
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
+    height: 200px;
+    background: radial-gradient(ellipse, rgba(212, 175, 55, 0.06) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.u-hero-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-weight: 600;
+    color: var(--u-text-tertiary);
+    margin-bottom: 1.5rem;
+}
+
+.u-balance {
+    font-family: var(--u-font-mono);
+    font-size: 3.5rem;
+    font-weight: 500;
+    color: var(--u-gold);
+    line-height: 1;
+    margin-bottom: 0.75rem;
+    position: relative;
+}
+
+.u-balance-unit {
+    font-size: 1.5rem;
+    color: var(--u-text-tertiary);
+    font-weight: 400;
+    margin-left: 0.25rem;
+}
+
+.u-balance-usd {
+    font-family: var(--u-font-mono);
+    font-size: 1.125rem;
+    color: var(--u-text-secondary);
+    margin-bottom: 2rem;
+}
+
+.u-hero-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--u-bg-main);
+    border: 1px solid var(--u-border);
+    border-radius: 8px;
+    margin-bottom: 2.5rem;
+}
+
+.u-meta-item {
+    text-align: center;
+}
+
+.u-meta-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 600;
+    color: var(--u-text-tertiary);
+    margin-bottom: 0.25rem;
+}
+
+.u-meta-value {
+    font-family: var(--u-font-mono);
+    font-size: 14px;
+    color: var(--u-text-primary);
+    font-weight: 500;
+}
+
+.u-meta-divider {
+    width: 1px;
+    height: 28px;
+    background: var(--u-border);
+}
+
+.u-hero-actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+/* --- Buttons --- */
+.u-btn-gold {
+    background: var(--u-gold);
+    color: #000;
+    font-family: var(--u-font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.75rem 2rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s;
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.2);
+}
+
+.u-btn-gold:hover {
+    background: #c9a330;
+}
+
+.u-btn-gold:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.u-btn-outline {
+    background: transparent;
+    border: 1px solid var(--u-border);
+    color: var(--u-text-primary);
+    font-family: var(--u-font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.75rem 2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.u-btn-outline:hover {
+    border-color: var(--u-text-secondary);
+}
+
+.u-btn-sm {
+    font-size: 12px;
+    font-family: var(--u-font-mono);
+    border: 1px solid var(--u-border);
+    padding: 0.375rem 0.75rem;
+    border-radius: 4px;
+    background: none;
+    cursor: pointer;
+    color: var(--u-text-secondary);
+    transition: all 0.15s;
+}
+
+.u-btn-sm:hover {
+    background: rgba(0, 0, 0, 0.02);
+    color: var(--u-text-primary);
+}
+
+/* --- Section Headers --- */
+.u-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.u-section-title {
+    font-family: var(--u-font-heading);
+    font-size: 1.375rem;
+    color: var(--u-text-primary);
+    font-weight: 400;
+}
+
+/* --- Rewards History Table --- */
+.u-history-card {
+    padding: 0;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.u-table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+}
+
+.u-table thead tr {
+    border-bottom: 1px solid var(--u-border);
+}
+
+.u-table th {
+    padding: 0.875rem 1.25rem;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--u-text-tertiary);
+    font-weight: 600;
+}
+
+.u-table tbody {
+    font-size: 14px;
+}
+
+.u-table tbody tr {
+    border-bottom: 1px solid rgba(230, 227, 222, 0.6);
+    transition: background 0.1s;
+}
+
+.u-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.u-table tbody tr:hover {
+    background: rgba(242, 239, 234, 0.5);
+}
+
+.u-table td {
+    padding: 0.875rem 1.25rem;
+}
+
+.u-table .u-col-right {
+    text-align: right;
+}
+
+.u-table .u-gold-amount {
+    color: var(--u-gold);
+    font-family: var(--u-font-mono);
+    font-weight: 500;
+}
+
+.u-table .u-mono {
+    font-family: var(--u-font-mono);
+    font-size: 13px;
+}
+
+.u-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.u-status-badge .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.u-status-badge.success {
+    color: #059669;
+}
+
+.u-status-badge.success .dot {
+    background: #22c55e;
+}
+
+.u-status-badge.failed {
+    color: #ef4444;
+}
+
+.u-status-badge.failed .dot {
+    background: #ef4444;
+}
+
+/* --- Empty State --- */
+.u-empty {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.u-empty-coins {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.u-empty-coin {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--u-gold);
+    animation: u-coin-fade 2.5s ease-in-out infinite;
+}
+
+.u-empty-coin:nth-child(2) {
+    animation-delay: 0.4s;
+    opacity: 0.6;
+    width: 10px;
+    height: 10px;
+}
+
+.u-empty-coin:nth-child(3) {
+    animation-delay: 0.8s;
+    opacity: 0.4;
+    width: 8px;
+    height: 8px;
+}
+
+.u-empty-coin:nth-child(4) {
+    animation-delay: 1.2s;
+    opacity: 0.25;
+    width: 6px;
+    height: 6px;
+}
+
+@keyframes u-coin-fade {
+
+    0%,
+    100% {
+        opacity: 0.2;
+        transform: translateY(0);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateY(-4px);
+    }
+}
+
+.u-empty-title {
+    font-family: var(--u-font-heading);
+    font-size: 1.25rem;
+    color: var(--u-text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.u-empty-desc {
+    font-size: 14px;
+    color: var(--u-text-secondary);
+    line-height: 1.6;
+    max-width: 360px;
+    margin: 0 auto;
+}
+
+/* --- Withdraw Section --- */
+.u-withdraw-section {
+    margin-bottom: 2rem;
+}
+
+.u-withdraw-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.u-withdraw-card {
+    padding: 2rem;
+}
+
+.u-withdraw-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.u-withdraw-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--u-gold-trace);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    color: var(--u-gold);
+}
+
+.u-input-label {
+    display: block;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 600;
+    color: var(--u-text-tertiary);
+    margin-bottom: 0.5rem;
+}
+
+.u-input {
+    width: 100%;
+    background: var(--u-bg-main);
+    border: 1px solid var(--u-border);
+    border-radius: 6px;
+    padding: 0.625rem 0.75rem;
+    font-family: var(--u-font-mono);
+    font-size: 14px;
+    color: var(--u-text-primary);
+    outline: none;
+    transition: border-color 0.15s;
+}
+
+.u-input:focus {
+    border-color: var(--u-gold);
+}
+
+.u-input::placeholder {
+    color: var(--u-text-tertiary);
+}
+
+.u-input-group {
+    margin-bottom: 1rem;
+}
+
+.u-input-prefix-wrap {
+    position: relative;
+}
+
+.u-input-prefix-wrap .prefix {
+    position: absolute;
+    right: 0.75rem;
+    top: 0.625rem;
+    color: var(--u-gold);
+    font-family: var(--u-font-mono);
+    font-size: 12px;
+}
+
+.u-note {
+    padding: 0.75rem;
+    background: var(--u-gold-trace);
+    border: 1px solid var(--u-gold-subtle);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--u-text-secondary);
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+
+.u-note strong {
+    color: var(--u-gold);
+    font-weight: 500;
+}
+
+/* --- Wallet Info Card --- */
+.u-wallet-card {
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+}
+
+.u-wallet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.u-wallet-title {
+    font-weight: 500;
+    font-size: 1rem;
+    color: var(--u-text-primary);
+}
+
+.u-wallet-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.u-wallet-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--u-border-light);
+}
+
+.u-wallet-row:last-child {
+    border-bottom: none;
+}
+
+.u-wallet-label {
+    font-size: 13px;
+    color: var(--u-text-secondary);
+}
+
+.u-wallet-value {
+    font-family: var(--u-font-mono);
+    font-size: 13px;
+    color: var(--u-text-primary);
+    font-weight: 500;
+}
+
+.u-wallet-value.gold {
+    color: var(--u-gold);
+}
+
+/* --- Coming Soon (Staking) --- */
+.u-staking {
+    background: var(--u-bg-main);
+    border: 1px dashed #D1D3CD;
+    border-radius: var(--u-radius);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    opacity: 0.7;
+    transition: opacity 0.15s;
+    cursor: default;
+    margin-bottom: 2rem;
+}
+
+.u-staking:hover {
+    opacity: 1;
+}
+
+.u-staking-badge {
+    color: var(--u-gold);
+    font-family: var(--u-font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    border: 1px solid var(--u-gold);
+    padding: 0.125rem 0.5rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+
+/* --- Modal --- */
+.u-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: none;
+}
+
+.u-modal-overlay.visible {
+    display: block;
+}
+
+.u-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(4px);
+}
+
+.u-modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 420px;
+    background: white;
+    border-radius: var(--u-radius);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.12);
+    padding: 2rem;
+    border: 1px solid var(--u-border);
+}
+
+.u-modal-title {
+    font-family: var(--u-font-heading);
+    font-size: 1.25rem;
+    color: var(--u-text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.u-modal-desc {
+    font-size: 14px;
+    color: var(--u-text-secondary);
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.u-modal-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.u-modal-actions>* {
+    flex: 1;
+}
+
+/* --- Loading --- */
+.u-loading {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--u-bg-main);
+    color: var(--u-text-secondary);
+    font-family: var(--u-font-body);
+}
+
+/* --- Gold shimmer on balance --- */
+@keyframes u-shimmer {
+    0% {
+        background-position: -200% center;
+    }
+
+    100% {
+        background-position: 200% center;
+    }
+}
+
+.u-balance-shimmer {
+    background: linear-gradient(90deg,
+            var(--u-gold) 0%,
+            #F0D878 25%,
+            var(--u-gold) 50%,
+            #C9A330 75%,
+            var(--u-gold) 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: u-shimmer 4s ease-in-out infinite;
+}
