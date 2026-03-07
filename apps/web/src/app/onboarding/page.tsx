@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Store, UserCircle } from "lucide-react";
 import "./onboarding.css";
+import { BASE_URL } from "@/utils/config";
 
 export default function OnboardingGateway() {
   const { data: session, status } = useSession();
@@ -18,7 +19,7 @@ export default function OnboardingGateway() {
       const email = session?.user?.email;
       if (!email) return;
 
-      const merchantRes = await fetch("http://localhost:3001/api/merchant/me", {
+      const merchantRes = await fetch(`${BASE_URL}/api/merchant/me`, {
         headers: { "Authorization": `Bearer ${(session as any).accessToken}` }
       });
       
@@ -31,7 +32,7 @@ export default function OnboardingGateway() {
         }
       }
 
-      const userRes = await fetch("http://localhost:3001/api/user/me", {
+      const userRes = await fetch(`${BASE_URL}/api/user/me`, {
         headers: { "Authorization": `Bearer ${(session as any).accessToken}` }
       });
 
@@ -61,7 +62,7 @@ export default function OnboardingGateway() {
   const selectUserRole = async () => {
     setIsInitializingUser(true);
     try {
-      const res = await fetch("http://localhost:3001/api/user/init", {
+      const res = await fetch(`${BASE_URL}/api/user/init`, {
         method: "POST",
         headers: { "Authorization": `Bearer ${(session as any).accessToken}` }
       });

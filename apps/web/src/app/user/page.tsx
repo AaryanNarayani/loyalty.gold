@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { ArrowLeft, Coins, ArrowRightLeft, ShieldCheck, Download, LogOut } from "lucide-react";
 import "./user.css";
+import { BASE_URL } from "@/utils/config";
 
 export default function UserDashboard() {
   const { data: session, status } = useSession();
@@ -35,7 +36,7 @@ export default function UserDashboard() {
 
   const fetchUserData = async () => {
     try {
-      const res = await fetch("http://localhost:3001/api/user/me", {
+      const res = await fetch(`${BASE_URL}/api/user/me`, {
         headers: { 
           "Authorization": `Bearer ${(session as any).accessToken}` 
         }
@@ -62,7 +63,7 @@ export default function UserDashboard() {
 
   const handleExportKeys = async () => {
     try {
-      const res = await fetch("http://localhost:3001/api/user/keys", {
+      const res = await fetch(`${BASE_URL}/api/user/keys`, {
         headers: { 
           "Authorization": `Bearer ${(session as any).accessToken}` 
         }

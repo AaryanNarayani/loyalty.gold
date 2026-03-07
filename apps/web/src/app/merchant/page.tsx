@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { ArrowLeft, Wallet, Settings, Plus, Check, ChevronRight, ArrowRightLeft, Users, ArrowUpRight, LogOut, Key, Eye, EyeOff, Copy, Trash2 } from "lucide-react";
 import "./merchant.css";
+import { BASE_URL } from "@/utils/config";
 
 export default function MerchantDashboard() {
   const { data: session, status } = useSession();
@@ -64,7 +65,7 @@ export default function MerchantDashboard() {
 
   const fetchMerchantData = async () => {
     try {
-      const res = await fetch("http://localhost:3001/api/merchant/me", {
+      const res = await fetch(`${BASE_URL}/api/merchant/me`, {
         headers: { "Authorization": `Bearer ${(session as any).accessToken}` }
       });
       if (res.ok) {
@@ -98,7 +99,7 @@ export default function MerchantDashboard() {
 
     setIsDepositing(true);
     try {
-      const res = await fetch("http://localhost:3001/api/merchant/deposit", {
+      const res = await fetch(`${BASE_URL}/api/merchant/deposit`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
@@ -125,7 +126,7 @@ export default function MerchantDashboard() {
   const handleSaveRatio = async () => {
     setIsSaving(true);
     try {
-      const res = await fetch("http://localhost:3001/api/merchant/config", {
+      const res = await fetch(`${BASE_URL}/api/merchant/config`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
@@ -147,7 +148,7 @@ export default function MerchantDashboard() {
     setIsOnboarding(true);
     setOnboardError("");
     try {
-      const res = await fetch("http://localhost:3001/api/merchant/onboard", {
+      const res = await fetch(`${BASE_URL}/api/merchant/onboard`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
@@ -178,7 +179,7 @@ export default function MerchantDashboard() {
     if (Number(depositAmount) > 10000) { alert("Max airdrop is 10,000 USDC"); return; }
     setIsDepositing(true);
     try {
-      const res = await fetch("http://localhost:3001/api/merchant/deposit", {
+      const res = await fetch(`${BASE_URL}/api/merchant/deposit`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${(session as any).accessToken}` },
         body: JSON.stringify({ amount: Number(depositAmount) })
@@ -218,7 +219,7 @@ export default function MerchantDashboard() {
     if (!convertAmount || Number(convertAmount) <= 0) return;
     setIsConverting(true);
     try {
-      const res = await fetch("http://localhost:3001/api/merchant/buy", {
+      const res = await fetch(`${BASE_URL}/api/merchant/buy`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${(session as any).accessToken}` },
         body: JSON.stringify({ amount: Number(convertAmount) })
@@ -240,7 +241,7 @@ export default function MerchantDashboard() {
     setIsOnboarding(true);
     setOnboardError("");
     try {
-      const res = await fetch("http://localhost:3001/api/merchant/onboard/complete", {
+      const res = await fetch(`${BASE_URL}/api/merchant/onboard/complete`, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${(session as any).accessToken}` },
         body: JSON.stringify({ rewardRatio: onboardData.rewardRatio / 100 })
@@ -263,7 +264,7 @@ export default function MerchantDashboard() {
   const handleUpdateProfile = async () => {
     setIsUpdatingProfile(true);
     try {
-      const res = await fetch("http://localhost:3001/api/merchant/profile", {
+      const res = await fetch(`${BASE_URL}/api/merchant/profile`, {
         method: "PUT",
         headers: { 
           "Content-Type": "application/json",
@@ -288,7 +289,7 @@ export default function MerchantDashboard() {
   const fetchApiKeys = async () => {
     setIsLoadingKeys(true);
     try {
-      const res = await fetch("http://localhost:3001/api/merchant/keys", {
+      const res = await fetch(`${BASE_URL}/api/merchant/keys`, {
         headers: { "Authorization": `Bearer ${(session as any).accessToken}` }
       });
       if (res.ok) {
@@ -305,7 +306,7 @@ export default function MerchantDashboard() {
   const handleCreateKey = async () => {
     setIsCreatingKey(true);
     try {
-      const res = await fetch("http://localhost:3001/api/merchant/keys", {
+      const res = await fetch(`${BASE_URL}/api/merchant/keys`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -330,7 +331,7 @@ export default function MerchantDashboard() {
   const handleDeleteKey = async (id: string) => {
     if (!confirm("Are you sure you want to delete this key pair? Any webhooks using it will stop working.")) return;
     try {
-      const res = await fetch(`http://localhost:3001/api/merchant/keys/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/merchant/keys/${id}`, {
         method: "DELETE",
         headers: { "Authorization": `Bearer ${(session as any).accessToken}` }
       });
@@ -363,7 +364,7 @@ export default function MerchantDashboard() {
     }
     setIsWithdrawing(true);
     try {
-      const res = await fetch("http://localhost:3001/api/merchant/withdraw", {
+      const res = await fetch(`${BASE_URL}/api/merchant/withdraw`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
@@ -1245,7 +1246,7 @@ export default function MerchantDashboard() {
                           <button className="m-danger-btn" onClick={async () => {
                             if (!confirm("⚠️ This will download your private key. Never share it. Continue?")) return;
                             try {
-                              const res = await fetch("http://localhost:3001/api/merchant/export-keys", {
+                              const res = await fetch(`${BASE_URL}/api/merchant/export-keys`, {
                                 headers: { "x-merchant-email": session?.user?.email as string }
                               });
                               if (!res.ok) { alert("Failed to export keys"); return; }
