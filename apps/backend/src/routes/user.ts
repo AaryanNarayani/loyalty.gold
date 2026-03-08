@@ -1,6 +1,7 @@
 import { Router, type Request, type Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { requireAuth } from '../middleware/auth';
+import { KycService } from '../services/kyc';
 
 const router = Router();
 const prisma = new PrismaClient();
@@ -97,20 +98,28 @@ router.post('/init', requireAuth, async (req: Request, res: Response) => {
       return res.status(403).json({ error: 'Cannot init user: Email is already registered as a Merchant.' });
     }
 
-    const user = await prisma.user.upsert({
-      where: { email },
-      update: {},
-      create: {
+    const existingUser = await prisma.user.findFirst({ where: { email } });
+    if (existingUser) {
+      return res.status(403).json({ error: 'Cannot init user: Email is already registered as a User.' });
+    }
+
+    const kycHash = KycService.generateHash(email)
+
+    const user = await prisma.user.create({
+      data: {
         email,
         walletAddress: '',
         encryptedPrivateKey: '',
         userPda: '',
-        kycHash: ''
+        kycHash,
       }
     });
 
     res.status(200).json({ message: 'User role acquired successfully', user });
   } catch (error: any) {
+    if (error.code === 'P2002') {
+      return res.status(409).json({ error: 'User is already registered.' });
+    }
     console.error('[User API Init Error]', error.message);
     res.status(500).json({ error: 'Internal Server Error' });
   }
