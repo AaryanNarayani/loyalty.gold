@@ -16,6 +16,11 @@ router.get('/me', requireAuth, async (req: Request, res: Response) => {
     try {
         const email = res.locals.email;
 
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (user) {
+            return res.status(403).json({ error: 'You are registered as a Consumer (User). You cannot access the Merchant Vault.' });
+        }
+
         const merchant: any = await prisma.merchant.findFirst({
             where: { email },
             include: {
