@@ -219,8 +219,12 @@ export default function Home() {
 
         <div className="lp-container lp-hero-content">
           <div className="lp-badge">
-            <div className="lp-badge-dot" />
-            Now Live on Solana Devnet
+            <svg className="lp-solana-icon" viewBox="0 0 397 311" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M64.6 237.9c2.4-2.4 5.7-3.8 9.2-3.8h317.4c5.8 0 8.7 7 4.6 11.1l-62.7 62.7c-2.4 2.4-5.7 3.8-9.2 3.8H6.5c-5.8 0-8.7-7-4.6-11.1l62.7-62.7z" fill="currentColor"/>
+              <path d="M64.6 3.8C67.1 1.4 70.4 0 73.8 0h317.4c5.8 0 8.7 7 4.6 11.1l-62.7 62.7c-2.4 2.4-5.7 3.8-9.2 3.8H6.5c-5.8 0-8.7-7-4.6-11.1L64.6 3.8z" fill="currentColor"/>
+              <path d="M333.1 120.1c-2.4-2.4-5.7-3.8-9.2-3.8H6.5c-5.8 0-8.7 7-4.6 11.1l62.7 62.7c2.4 2.4 5.7 3.8 9.2 3.8h317.4c5.8 0 8.7-7 4.6-11.1l-62.7-62.7z" fill="currentColor"/>
+            </svg>
+            Live on Solana Devnet
           </div>
 
           <h1 className="lp-hero-title">
