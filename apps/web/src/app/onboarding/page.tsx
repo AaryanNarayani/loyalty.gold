@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Store, UserCircle } from "lucide-react";
+import toast from "react-hot-toast";
 import "./onboarding.css";
 import { BASE_URL } from "@/utils/config";
 
@@ -72,7 +73,7 @@ export default function OnboardingGateway() {
         router.push("/user");
       } else {
         const err = await res.json();
-        alert(err.error || "Failed to initialize User role");
+        toast.error(err.error || "Failed to initialize User role");
         setIsInitializingUser(false);
       }
     } catch (e) {

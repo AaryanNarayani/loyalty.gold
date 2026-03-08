@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { ArrowLeft, Coins, ArrowRightLeft, ShieldCheck, Download, LogOut } from "lucide-react";
+import toast from "react-hot-toast";
 import "./user.css";
 import { BASE_URL } from "@/utils/config";
 
@@ -48,7 +49,7 @@ export default function UserDashboard() {
         setBalance(data.balance);
         setHistory(data.history);
       } else if (res.status === 403) {
-        alert("You are registered as a Merchant. You cannot access the User Vault.");
+        toast.error("You are registered as a Merchant. You cannot access the User Vault.");
         router.push("/merchant");
         return;
       } else if (res.status === 404) {
@@ -78,11 +79,11 @@ export default function UserDashboard() {
         downloadAnchorNode.click();
         downloadAnchorNode.remove();
       } else {
-        alert("Wallet keys not found. You might need to accumulate a reward first to mint your wallet.");
+        toast.error("Wallet keys not found. You might need to accumulate a reward first to mint your wallet.");
       }
     } catch (error) {
        console.error("Failed to export keys", error);
-       alert("Failed to export keys");
+       toast.error("Failed to export keys");
     }
   };
 
@@ -287,7 +288,7 @@ export default function UserDashboard() {
 
           <div className="u-modal-actions">
             <button className="u-btn-outline" onClick={() => setShowWithdrawModal(false)}>Cancel</button>
-            <button className="u-btn-gold" onClick={() => { setShowWithdrawModal(false); alert("Withdrawal feature coming soon!"); }}>
+            <button className="u-btn-gold" onClick={() => { setShowWithdrawModal(false); toast("Withdrawal feature coming soon!", { icon: "🚀" }); }}>
               Withdraw
             </button>
           </div>

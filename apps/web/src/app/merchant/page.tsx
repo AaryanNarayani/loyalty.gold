@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { ArrowLeft, Wallet, Settings, Plus, Check, ChevronRight, ArrowRightLeft, Users, ArrowUpRight, LogOut, Key, Eye, EyeOff, Copy, Trash2 } from "lucide-react";
+import toast from "react-hot-toast";
 import "./merchant.css";
 import { BASE_URL } from "@/utils/config";
 
@@ -81,7 +82,7 @@ export default function MerchantDashboard() {
            setMerchantData({ isOnboarded: false });
         }
       } else if (res.status === 403) {
-         alert("You are registered as a User. You cannot access the Merchant Portal.");
+         toast.error("You are registered as a User. You cannot access the Merchant Portal.");
          router.push("/");
       }
     } catch (error) {
@@ -94,7 +95,7 @@ export default function MerchantDashboard() {
   const handleDeposit = async () => {
     if (!depositAmount || Number(depositAmount) <= 0) return;
     if (Number(depositAmount) > 10000) {
-      alert("Maximum test token deposit is 10,000 USDC per request.");
+      toast.error("Maximum test token deposit is 10,000 USDC per request.");
       return;
     }
 
@@ -112,13 +113,13 @@ export default function MerchantDashboard() {
         const data = await res.json();
         setMerchantData({ ...merchantData, balanceUsdc: data.balanceUsdc });
         setDepositAmount("");
-        alert("Successfully airdropped USDC Test Tokens to your account");
+        toast.success("Successfully airdropped USDC Test Tokens to your account");
       } else {
         const error = await res.json();
-        alert(error.error || "Deposit failed");
+        toast.error(error.error || "Deposit failed");
       }
     } catch (e) {
-      alert("Deposit failed");
+      toast.error("Deposit failed");
     } finally {
       setIsDepositing(false);
     }
@@ -136,10 +137,10 @@ export default function MerchantDashboard() {
         body: JSON.stringify({ rewardRatio: rewardRatio / 100 })
       });
       if (res.ok) {
-        alert("Reward ratio successfully updated!");
+        toast.success("Reward ratio successfully updated!");
       }
     } catch(e) {
-      alert("Failed to save config");
+      toast.error("Failed to save config");
     } finally {
       setIsSaving(false);
     }
@@ -177,7 +178,7 @@ export default function MerchantDashboard() {
 
   const handleFundPool = async () => {
     if (!depositAmount || Number(depositAmount) <= 0) return;
-    if (Number(depositAmount) > 10000) { alert("Max airdrop is 10,000 USDC"); return; }
+    if (Number(depositAmount) > 10000) { toast.error("Max airdrop is 10,000 USDC"); return; }
     setIsDepositing(true);
     try {
       const res = await fetch(`${BASE_URL}/api/merchant/deposit`, {
@@ -192,9 +193,9 @@ export default function MerchantDashboard() {
         setOnboardDeposited(true);
       } else {
         const error = await res.json();
-        alert(error.error || "Deposit failed");
+        toast.error(error.error || "Deposit failed");
       }
-    } catch (e) { alert("Deposit failed"); }
+    } catch (e) { toast.error("Deposit failed"); }
     finally { setIsDepositing(false); }
   };
 
@@ -228,13 +229,13 @@ export default function MerchantDashboard() {
       if (res.ok) {
         const data = await res.json();
         setMerchantData({ ...merchantData, balanceUsdc: data.balanceUsdc, balanceGold: data.balanceGold });
-        alert(`Successfully converted ${convertAmount} USDC → ${data.goldAmountOz.toFixed(6)} oz Gold`);
+        toast.success(`Successfully converted ${convertAmount} USDC → ${data.goldAmountOz.toFixed(6)} oz Gold`);
         setConvertAmount("");
       } else {
         const err = await res.json();
-        alert(err.error || "Conversion failed");
+        toast.error(err.error || "Conversion failed");
       }
-    } catch (e) { alert("Conversion failed"); }
+    } catch (e) { toast.error("Conversion failed"); }
     finally { setIsConverting(false); }
   };
 
@@ -276,12 +277,12 @@ export default function MerchantDashboard() {
       if (res.ok) {
         const data = await res.json();
         setMerchantData({ ...merchantData, name: data.merchant.name, shopDomain: data.merchant.shopDomain });
-        alert("Profile updated successfully");
+        toast.success("Profile updated successfully");
       } else {
-        alert("Failed to update profile");
+        toast.error("Failed to update profile");
       }
     } catch(e) {
-      alert("Error updating profile");
+      toast.error("Error updating profile");
     } finally {
       setIsUpdatingProfile(false);
     }
@@ -320,10 +321,10 @@ export default function MerchantDashboard() {
         setApiKeys(prev => [...prev, data.key]);
         setNewKeyName("");
       } else {
-        alert(data.error || "Failed to create key pair");
+        toast.error(data.error || "Failed to create key pair");
       }
     } catch (e) {
-      alert("Failed to create key pair");
+      toast.error("Failed to create key pair");
     } finally {
       setIsCreatingKey(false);
     }
@@ -340,10 +341,10 @@ export default function MerchantDashboard() {
         setApiKeys(prev => prev.filter(k => k.id !== id));
       } else {
         const err = await res.json();
-        alert(err.error || "Failed to delete key pair");
+        toast.error(err.error || "Failed to delete key pair");
       }
     } catch (e) {
-      alert("Failed to delete key pair");
+      toast.error("Failed to delete key pair");
     }
   };
 
@@ -360,7 +361,7 @@ export default function MerchantDashboard() {
   const handleWithdraw = async (asset: string) => {
     if (!withdrawAmount || Number(withdrawAmount) <= 0) return;
     if (!destinationWallet.trim()) {
-      alert("Destination Wallet address is required");
+      toast.error("Destination Wallet address is required");
       return;
     }
     setIsWithdrawing(true);
@@ -378,13 +379,13 @@ export default function MerchantDashboard() {
         const data = await res.json();
         setMerchantData({ ...merchantData, balanceUsdc: data.merchant.balanceUsdc, balanceGold: data.merchant.balanceGold });
         setWithdrawAmount("");
-        alert(`Successfully withdrew ${asset}`);
+        toast.success(`Successfully withdrew ${asset}`);
       } else {
         const err = await res.json();
-        alert(err.error || "Withdrawal failed");
+        toast.error(err.error || "Withdrawal failed");
       }
     } catch (e) {
-      alert("Withdrawal request failed");
+      toast.error("Withdrawal request failed");
     } finally {
       setIsWithdrawing(false);
     }
@@ -1220,7 +1221,7 @@ export default function MerchantDashboard() {
                         <div className="m-docs-step"><span className="m-docs-step-num">2</span> Connect Merchant Wallet</div>
                         <div className="m-docs-step"><span className="m-docs-step-num">3</span> Activate Rewards</div>
                       </div>
-                      <button className="m-btn-sm" onClick={() => alert("Please go to https://apps.shopify.com/loyalty-gold to install the app. (Mock Flow)")}>View Setup Guide</button>
+                      <button className="m-btn-sm" onClick={() => toast.success("Please go to https://apps.shopify.com/loyalty-gold to install the app. (Mock Flow)")}>View Setup Guide</button>
                     </div>
                     <div className="m-card m-docs-card">
                       <div className="m-docs-icon api">
@@ -1264,7 +1265,7 @@ export default function MerchantDashboard() {
                               const res = await fetch(`${BASE_URL}/api/merchant/export-keys`, {
                                 headers: { "x-merchant-email": session?.user?.email as string }
                               });
-                              if (!res.ok) { alert("Failed to export keys"); return; }
+                              if (!res.ok) { toast.error("Failed to export keys"); return; }
                               const data = await res.json();
                               const blob = new Blob([JSON.stringify(data.secretKey)], { type: "application/json" });
                               const url = URL.createObjectURL(blob);
@@ -1273,7 +1274,7 @@ export default function MerchantDashboard() {
                               a.download = `treasury-wallet-${data.publicKey.slice(0, 8)}.json`;
                               a.click();
                               URL.revokeObjectURL(url);
-                            } catch { alert("Export failed"); }
+                            } catch { toast.error("Export failed"); }
                           }}>Export Wallet Keypair</button>
                         </div>
                       </div>
