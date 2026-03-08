@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { ArrowLeft, Wallet, Settings, Plus, Check, ChevronRight, ArrowRightLeft, Users, ArrowUpRight, LogOut, Key, Eye, EyeOff, Copy, Trash2 } from "lucide-react";
+import { ArrowLeft, Wallet, Settings, Plus, Check, ChevronRight, ArrowRightLeft, Users, ArrowUpRight, LogOut, Key, Eye, EyeOff, Copy, Trash2, Download } from "lucide-react";
 import toast from "react-hot-toast";
 import "./merchant.css";
 import { BASE_URL } from "@/utils/config";
@@ -56,6 +56,8 @@ export default function MerchantDashboard() {
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [showConvertModal, setShowConvertModal] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [isWalletExpanded, setIsWalletExpanded] = useState(false);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -364,6 +366,11 @@ export default function MerchantDashboard() {
       toast.error("Destination Wallet address is required");
       return;
     }
+    if (destinationWallet.trim() === merchantData?.walletAddress) {
+      toast.error("Destination wallet cannot be the same as your merchant wallet");
+      return;
+    }
+    
     setIsWithdrawing(true);
     try {
       const res = await fetch(`${BASE_URL}/api/merchant/withdraw`, {
@@ -377,7 +384,7 @@ export default function MerchantDashboard() {
       
       if (res.ok) {
         const data = await res.json();
-        setMerchantData({ ...merchantData, balanceUsdc: data.merchant.balanceUsdc, balanceGold: data.merchant.balanceGold });
+        setMerchantData({ ...merchantData, balanceUsdc: data.balanceUsdc, balanceGold: data.balanceGold });
         setWithdrawAmount("");
         toast.success(`Successfully withdrew ${asset}`);
       } else {
@@ -421,12 +428,11 @@ export default function MerchantDashboard() {
       {merchantData && merchantData.isOnboarded !== false && (
         <aside className="m-sidebar">
           <div className="m-sidebar-brand">
-            <div className="m-sidebar-brand-text">
+            <Link href="/" className="m-sidebar-brand-text" style={{ textDecoration: 'none' }}>
               loyalty.gold
               <span className="m-brand-dot" />
-            </div>
+            </Link>    
           </div>
-
           <nav className="m-sidebar-nav">
             <button onClick={() => switchTab("dashboard")} className={`m-nav-item ${activeTab === "dashboard" ? "active" : ""}`}>
               <svg className="m-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /></svg>
@@ -666,6 +672,68 @@ export default function MerchantDashboard() {
             </div>
           ) : (
             <>
+              {/* --- Embedded Wallet Top Navbar --- */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '2rem' }}>
+                <div style={{ 
+                  display: 'flex', alignItems: 'center', gap: '1rem', 
+                  background: 'var(--m-bg-card)', border: '1px solid var(--m-border)', 
+                  padding: '8px 16px', borderRadius: '100px', boxShadow: '0 2px 10px rgba(0,0,0,0.02)' 
+                }}>
+                  <div 
+                    style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+                    onClick={() => setIsWalletExpanded(!isWalletExpanded)}
+                    title={isWalletExpanded ? "Click to collapse" : "Click to view full address"}
+                  >
+                    <Wallet size={16} color="var(--m-gold-primary)" />
+                    <span style={{ fontFamily: 'var(--m-font-mono)', fontSize: '13px', fontWeight: 500, color: 'var(--m-text-primary)' }}>
+                      {isWalletExpanded 
+                        ? (merchantData?.walletAddress || "") 
+                        : `${(merchantData?.walletAddress || "").slice(0, 4)}...${(merchantData?.walletAddress || "").slice(-4)}`}
+                    </span>
+                    {isWalletExpanded && (
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          copyToClipboard(merchantData?.walletAddress || "", "wallet");
+                        }}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--m-text-secondary)', marginLeft: '4px' }}
+                        title="Copy Address"
+                      >
+                        {copiedId === "wallet" ? <Check size={14} /> : <Copy size={14} />}
+                      </button>
+                    )}
+                  </div>
+                  <div style={{ width: '1px', height: '16px', background: 'var(--m-border)' }} />
+                  <button 
+                    onClick={async () => {
+                      try {
+                        const res = await fetch(`${BASE_URL}/api/merchant/export-keys`, {
+                          headers: { "x-merchant-email": session?.user?.email as string }
+                        });
+                        if (!res.ok) { toast.error("Failed to export keys"); return; }
+                        const data = await res.json();
+                        const blob = new Blob([JSON.stringify(data.secretKey)], { type: "application/json" });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement("a");
+                        a.href = url;
+                        a.download = `treasury-wallet-${data.publicKey.slice(0, 8)}.json`;
+                        a.click();
+                        URL.revokeObjectURL(url);
+                      } catch { toast.error("Export failed"); }
+                    }}
+                    style={{ 
+                      background: 'none', border: 'none', cursor: 'pointer', 
+                      display: 'flex', alignItems: 'center', gap: '6px', 
+                      fontSize: '12px', fontWeight: 500, color: 'var(--m-text-secondary)',
+                      fontFamily: 'var(--m-font-body)'
+                    }}
+                  >
+                    <Download size={14} />
+                    Export Keypair
+                  </button>
+                </div>
+              </div>
+
               {activeTab === "dashboard" && (
                 <section>
                   <header className="m-section-header">
@@ -807,7 +875,7 @@ export default function MerchantDashboard() {
                           <div className="m-stat-label" style={{ marginBottom: 4 }}>Est. Cost per $1000 revenue</div>
                           <div className="m-font-mono" style={{ fontSize: "1.125rem", color: "var(--m-text-primary)" }}>${(rewardRatio * 10).toFixed(2)}</div>
                         </div>
-                        <button className="m-btn-gold m-full-width" onClick={handleSaveRatio} disabled={isSaving}>
+                        <button className="m-btn-gold m-full-width" onClick={() => setShowUpdateModal(true)} disabled={isSaving}>
                           {isSaving ? "Saving..." : "Update Parameters"}
                         </button>
                       </div>
@@ -933,7 +1001,7 @@ export default function MerchantDashboard() {
                           placeholder="Paste or enter Solana wallet address" 
                           style={{ 
                             width: "100%", 
-                            padding: "14px 110px 14px 44px", 
+                            padding: "14px 16px 14px 44px", 
                             fontSize: "15px", 
                             fontFamily: "var(--m-font-mono)", 
                             background: "#FFFFFF", 
@@ -946,33 +1014,6 @@ export default function MerchantDashboard() {
                           onFocus={(e) => e.target.style.borderColor = "#D4AF37"}
                           onBlur={(e) => e.target.style.borderColor = "#E6E3DE"}
                         />
-                        <button 
-                          onClick={async () => {
-                            try {
-                              const text = await navigator.clipboard.readText();
-                              if (text) setDestinationWallet(text);
-                            } catch (err) {
-                              console.error("Failed to read clipboard contents: ", err);
-                            }
-                          }}
-                          style={{ 
-                            position: "absolute", 
-                            right: 8, 
-                            background: "#F5F5F5", 
-                            border: "none", 
-                            padding: "8px 16px", 
-                            borderRadius: "6px", 
-                            fontSize: 13, 
-                            fontWeight: 600, 
-                            color: "#555",
-                            cursor: "pointer",
-                            transition: "background 0.2s"
-                          }}
-                          onMouseEnter={(e) => e.currentTarget.style.background = "#EBEBEB"}
-                          onMouseLeave={(e) => e.currentTarget.style.background = "#F5F5F5"}
-                        >
-                          Paste
-                        </button>
                       </div>
                     </div>
 
@@ -1057,16 +1098,12 @@ export default function MerchantDashboard() {
                             <span style={{ color: "#666", fontFamily: "var(--m-font-body)" }}>Network</span>
                             <span style={{ fontWeight: 500, color: "#111", fontFamily: "var(--m-font-body)" }}>Solana</span>
                           </div>
-                          <div style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span style={{ color: "#666", fontFamily: "var(--m-font-body)" }}>Estimated Fee</span>
-                            <span style={{ fontWeight: 500, color: "#111", fontFamily: "var(--m-font-mono)" }}>$0.02</span>
-                          </div>
                           <div style={{ height: 1, background: "#E6E3DE", margin: "6px 0" }}></div>
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                             <span style={{ color: "#111", fontWeight: 600, fontFamily: "var(--m-font-body)" }}>You Will Receive</span>
                             <span style={{ fontWeight: 600, color: "#D4AF37", fontSize: 16, fontFamily: "var(--m-font-mono)" }}>
                               {withdrawAsset === "USDC" 
-                                ? `$${Math.max(0, Number(withdrawAmount) - 0.02).toFixed(2)} USDC` 
+                                ? `$${Math.max(0, Number(withdrawAmount)).toFixed(2)} USDC` 
                                 : `${Math.max(0, Number(withdrawAmount)).toFixed(6)} oz`}
                             </span>
                           </div>
@@ -1076,7 +1113,13 @@ export default function MerchantDashboard() {
 
                     {/* WITHDRAW BUTTON */}
                     <button 
-                      onClick={() => { if (withdrawAmount && destinationWallet) setShowWithdrawModal(true); }} 
+                      onClick={() => { 
+                        if (destinationWallet.trim() === merchantData?.walletAddress) {
+                          toast.error("Destination wallet cannot be the same as your merchant wallet");
+                          return;
+                        }
+                        if (withdrawAmount && destinationWallet) setShowWithdrawModal(true); 
+                      }} 
                       disabled={isWithdrawing || !withdrawAmount || !destinationWallet} 
                       style={{ 
                         width: "100%", 
@@ -1184,18 +1227,16 @@ export default function MerchantDashboard() {
                     <div className="m-code-block">
                       <div className="m-code-endpoint">
                         <span className="m-code-method-post">POST</span>
-                        <span>/v1/rewards</span>
+                        <span>/api/webhooks/shopify/order</span>
                       </div>
                       <pre style={{ lineHeight: 1.8, margin: 0, whiteSpace: "pre-wrap" }}>
-                        <span className="m-code-cmd">curl</span> https://api.loyalty.gold/v1/rewards \{"\n"}  <span className="m-code-flag">-u</span> pk_live_...: \{"\n"}  <span className="m-code-flag">-d</span> amount=1000 \{"\n"}  <span className="m-code-flag">-d</span> currency=usd \{"\n"}  <span className="m-code-flag">-d</span> customer=cus_8s9d...
+                        <span className="m-code-cmd">curl</span> -X POST https://loyaltygold-production.up.railway.app/api/webhooks/shopify/order \{"\n"}  <span className="m-code-flag">-H</span> "Content-Type: application/json" \{"\n"}  <span className="m-code-flag">-H</span> "X-Shop-Domain: my-store.com" \{"\n"}  <span className="m-code-flag">-H</span> "X-Oro-Signature: $SIGNATURE" \{"\n"}  <span className="m-code-flag">-d</span> "$PAYLOAD"
                       </pre>
-                      <div className="m-code-endpoint" style={{ marginTop: "1.5rem" }}>
-                        <span className="m-code-method-get">GET</span>
-                        <span>/v1/balance</span>
-                      </div>
-                      <pre style={{ lineHeight: 1.8, margin: 0, whiteSpace: "pre-wrap" }}>
-                        <span className="m-code-cmd">curl</span> https://api.loyalty.gold/v1/balance \{"\n"}  <span className="m-code-flag">-u</span> pk_live_...
-                      </pre>
+                    </div>
+                    <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end' }}>
+                      <button onClick={() => switchTab('docs')} className="m-btn-sm" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        See Docs for more <ArrowUpRight size={14} />
+                      </button>
                     </div>
                   </div>
                 </section>
@@ -1287,7 +1328,7 @@ export default function MerchantDashboard() {
                         <p className="m-text-secondary m-text-sm m-mb-3">Set up a Shopify Webhook pointing to the endpoint below for the Order Creation event.</p>
                         <div className="m-cost-box">
                           <div className="m-stat-label" style={{ marginBottom: 4 }}>Webhook Endpoint</div>
-                          <code className="m-font-mono m-text-gold" style={{ fontSize: 13, wordBreak: "break-all", display: "block" }}>https://api.loyalty.gold/webhooks/shopify/order</code>
+                          <code className="m-font-mono m-text-gold" style={{ fontSize: 13, wordBreak: "break-all", display: "block" }}>https://loyaltygold-production.up.railway.app/api/webhooks/shopify/order</code>
                         </div>
                       </div>
                     </div>
@@ -1298,6 +1339,23 @@ export default function MerchantDashboard() {
           )}
         </div>
       </main>
+
+      <div className={`m-modal-overlay ${showUpdateModal ? "visible" : ""}`}>
+        <div className="m-modal-backdrop" onClick={() => setShowUpdateModal(false)} />
+        <div className="m-modal-content">
+          <h3 className="m-modal-title">Confirm Update</h3>
+          <p className="m-modal-desc">Are you sure you want to update the Reward Engine ratio to <span className="m-font-mono m-font-medium" style={{ color: "var(--m-text-primary)" }}>{rewardRatio}</span>? This will directly impact your loyalty economics.</p>
+          <div className="m-modal-actions" style={{ marginTop: "2rem" }}>
+            <button className="m-btn-outline" onClick={() => setShowUpdateModal(false)}>Cancel</button>
+            <button className="m-btn-gold" onClick={() => {
+              setShowUpdateModal(false);
+              handleSaveRatio();
+            }}>
+              Confirm Update
+            </button>
+          </div>
+        </div>
+      </div>
 
       <div className={`m-modal-overlay ${showWithdrawModal ? "visible" : ""}`}>
         <div className="m-modal-backdrop" onClick={() => setShowWithdrawModal(false)} />
@@ -1316,10 +1374,6 @@ export default function MerchantDashboard() {
             <div className="m-modal-detail-row" style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span className="m-modal-detail-label" style={{ color: "var(--m-text-secondary)" }}>Network</span>
               <span className="m-modal-detail-value" style={{ color: "var(--m-text-primary)" }}>Solana (Devnet)</span>
-            </div>
-            <div className="m-modal-detail-row" style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span className="m-modal-detail-label" style={{ color: "var(--m-text-secondary)" }}>Estimated Fee</span>
-              <span className="m-modal-detail-value m-font-mono" style={{ fontSize: 14, color: "var(--m-text-primary)" }}>$0.02</span>
             </div>
           </div>
           <div className="m-modal-actions">

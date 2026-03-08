@@ -162,7 +162,7 @@ router.post('/onboard', requireAuth, async (req: Request, res: Response) => {
 
         try {
             console.log(`[MerchantRoute] Funding merchant wallet ${wallet.publicKey} with 0.005 SOL...`);
-            await SolanaService.sendAirdrop(wallet.publicKey, 0.005);
+            await SolanaService.sendAirdrop(wallet.publicKey, 0.02);
             console.log(`[MerchantRoute] Successfully funded merchant wallet.`);
         } catch (e: any) {
             console.error(`[MerchantRoute] Error: SOL Funding failed:`, e.message);
@@ -261,7 +261,6 @@ router.post('/withdraw', requireAuth, async (req: Request, res: Response) => {
     try {
         const email = res.locals.email;
         const { asset, amount, destinationWallet: destinationWalletStr } = req.body;
-
         // Input validation
         if (!asset || (asset !== 'USDC' && asset !== 'GOLD') || !amount || amount <= 0) {
             return res.status(400).json({ error: 'Invalid withdrawal request. Required: asset (USDC|GOLD), amount, destinationWallet' });
@@ -280,6 +279,10 @@ router.post('/withdraw', requireAuth, async (req: Request, res: Response) => {
 
         const merchant = await prisma.merchant.findFirst({ where: { email } });
         if (!merchant) return res.status(404).json({ error: 'Merchant not found' });
+
+        if (destinationWallet.toBase58() == merchant.walletAddress) {
+            return res.status(400).json({ error: 'Destination wallet cannot be the merchant wallet' });
+        }
 
         if (!merchant.walletAddress || !merchant.encryptedPrivateKey) {
             return res.status(400).json({ error: 'Merchant wallet not initialized. Complete onboarding first.' });

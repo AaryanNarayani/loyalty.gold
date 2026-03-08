@@ -178,8 +178,9 @@
 
 /* Loader Logo Animation */
 .ob-loader-logo {
-    width: 140px;
-    height: auto;
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
     animation: ob-pulse-glow 2s infinite ease-in-out;
 }
 

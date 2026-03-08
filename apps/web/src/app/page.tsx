@@ -182,6 +182,7 @@ export default function Home() {
   ];
 
   return (
+    <>
     <div className="lp-root">
       {/* Noise + Glows */}
       <div className="lp-noise" />
@@ -232,10 +233,16 @@ export default function Home() {
           </p>
 
           <div className="lp-hero-actions">
-            <button className="lp-btn-primary" onClick={() => signIn("google")}>
-              <img src="/google.png" alt="Google" width="18" height="18"/>
-              Signin with google
-            </button>
+            {status === "authenticated" ? (
+              <button className="lp-btn-primary" onClick={() => router.push("/onboarding")}>
+                Access Dashboard
+              </button>
+            ) : (
+              <button className="lp-btn-primary" onClick={() => signIn("google", { callbackUrl: "/onboarding" })}>
+                <img src="/google.png" alt="Google" width="18" height="18"/>
+                Signin with google
+              </button>
+            )}
             <button className="lp-btn-ghost" onClick={() => router.push("/docs")}>View Docs</button>
           </div>
 
@@ -457,12 +464,13 @@ export default function Home() {
           </div>
         </div>
       </section>
-
+    </div>
+    <div className="lp-faq-wrapper">
       {/* ── FAQ ── */}
       <section id="faq" className="lp-section lp-container" style={{ paddingBottom: "120px" }}>
         <div className="lp-section-header" style={{ marginBottom: 0 }}>
           <span className="lp-eyebrow">Questions</span>
-          <h2 className="lp-section-title">Frequently Asked</h2>
+          <h2 className="lp-section-title lp-gold-gradient-text" style={{ fontSize: "2.5rem" }}>Frequently Asked</h2>
         </div>
         <div className="lp-faq-list">
           {faqs.map(f => (
@@ -470,7 +478,8 @@ export default function Home() {
           ))}
         </div>
       </section>
-
+    </div>
+    <div className="lp-cta-wrapper">
       {/* ── FINAL CTA ── */}
       <section className="lp-container lp-final-cta">
         <span className="lp-eyebrow" style={{ display: "block", marginBottom: "32px" }}>Get Started</span>
@@ -519,5 +528,6 @@ export default function Home() {
         </div>
       </footer>
     </div>
+    </>
   );
 }

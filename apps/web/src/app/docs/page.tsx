@@ -10,7 +10,7 @@ const CODE_NODE = `import crypto from 'crypto';
 
 const WEBHOOK_SECRET = 'your_webhook_secret_here';
 const SHOP_DOMAIN = 'my-store.com';
-const ORO_WEBHOOK_URL = 'https://api.loyalty.gold/api/webhooks/shopify/order';
+const ORO_WEBHOOK_URL = 'https://loyaltygold-production.up.railway.app/api/webhooks/shopify/order';
 
 async function sendRewardWebhook(orderData) {
   // 1. Convert payload to JSON string
@@ -55,7 +55,7 @@ import requests
 
 WEBHOOK_SECRET = b'your_webhook_secret_here'
 SHOP_DOMAIN = 'my-store.com'
-ORO_WEBHOOK_URL = 'https://api.loyalty.gold/api/webhooks/shopify/order'
+ORO_WEBHOOK_URL = 'https://loyaltygold-production.up.railway.app/api/webhooks/shopify/order'
 
 def send_reward_webhook(order_data):
     # 1. Convert payload to JSON string (no spaces for exact match)
@@ -97,7 +97,7 @@ SECRET="your_webhook_secret_here"
 SIGNATURE=$(echo -n "$PAYLOAD" | openssl dgst -sha256 -hmac "$SECRET" -binary | base64)
 
 # 4. Trigger the webhook!
-curl -X POST https://api.loyalty.gold/api/webhooks/shopify/order \\
+curl -X POST https://loyaltygold-production.up.railway.app/api/webhooks/shopify/order \\
   -H "Content-Type: application/json" \\
   -H "X-Shop-Domain: my-store.com" \\
   -H "X-Oro-Signature: $SIGNATURE" \\
@@ -223,7 +223,7 @@ export default function DocsPage() {
                 
                 <div className="d-callout">
                     <span className="d-tag post">POST</span>
-                    <code>https://api.loyalty.gold/api/webhooks/shopify/order</code>
+                    <code>https://loyaltygold-production.up.railway.app/api/webhooks/shopify/order</code>
                 </div>
 
                 <h3>Payload Format (JSON)</h3>
