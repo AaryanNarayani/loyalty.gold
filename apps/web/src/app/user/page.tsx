@@ -87,7 +87,17 @@ export default function UserDashboard() {
   };
 
   if (isLoading) {
-    return <div className="u-loading">Loading...</div>;
+    return (
+      <div className="user-root u-loading">
+        <div className="u-bg-layer" />
+        <div className="u-radial" />
+        <img 
+          src="/oro.svg" 
+          alt="Loading..." 
+          className="u-loading-logo"
+        />
+      </div>
+    );
   }
 
   const goldPriceUsd = 2450.50;

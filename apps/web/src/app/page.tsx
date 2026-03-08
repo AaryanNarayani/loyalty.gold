@@ -114,22 +114,22 @@ export default function Home() {
   const glow1Ref = useRef<HTMLDivElement>(null);
   const glow2Ref = useRef<HTMLDivElement>(null);
 
+  const [navState, setNavState] = useState(0);
+
   // Scroll → shrink nav
   useEffect(() => {
     let ticking = false;
-    function onScroll() {
+    const handleScroll = () => {
       if (!ticking) {
-        requestAnimationFrame(() => {
-          if (navRef.current) {
-            navRef.current.classList.toggle("scrolled", window.scrollY > 40);
-          }
+        window.requestAnimationFrame(() => {
+          setNavState(window.scrollY > 50 ? 1 : 0);
           ticking = false;
         });
         ticking = true;
       }
-    }
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Mouse parallax for ambient glows
@@ -189,12 +189,15 @@ export default function Home() {
       <div ref={glow2Ref} className="lp-ambient lp-glow-2" />
 
       {/* ── NAV ── */}
-      <nav ref={navRef} className="lp-nav">
+      <nav 
+        ref={navRef} 
+        className={`lp-nav state-${navState}`}
+      >
         <a className="lp-logo" href="#">
           <div className="lp-logo-icon" />
           loyalty.gold
         </a>
-        <div className="lp-nav-links">
+        <div className={`lp-nav-links ${navState === 1 ? "hidden" : ""}`}>
           <a href="#product">Product</a>
           <a href="#transparency">Transparency</a>
           <a href="#ecosystem">Ecosystem</a>
@@ -207,6 +210,7 @@ export default function Home() {
 
       {/* ── HERO ── */}
       <section className="lp-hero">
+        <div className="lp-hero-light" />
         <div className="lp-hero-bg" />
         <div className="lp-hero-bg-lines" />
         <div className="lp-hero-orb" />
@@ -215,7 +219,7 @@ export default function Home() {
         <div className="lp-container lp-hero-content">
           <div className="lp-badge">
             <div className="lp-badge-dot" />
-            Now Live on Solana Mainnet
+            Now Live on Solana Devnet
           </div>
 
           <h1 className="lp-hero-title">
@@ -224,23 +228,20 @@ export default function Home() {
           </h1>
 
           <p className="lp-hero-desc">
-            A universal infrastructure layer enabling Shopify merchants to reward customer loyalty
-            with tokenized, on-chain gold — not arbitrary points.
+            Universal on-chain gold rewards infrastructure for e-commerce.
           </p>
 
           <div className="lp-hero-actions">
-            <button className="lp-btn-primary" onClick={handleCTA}>
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              Integrate with Shopify
+            <button className="lp-btn-primary" onClick={() => signIn("google")}>
+              <img src="/google.png" alt="Google" width="18" height="18"/>
+              Signin with google
             </button>
-            <a href="#transparency" className="lp-btn-ghost">View Transparency</a>
+            <button className="lp-btn-ghost" onClick={() => router.push("/docs")}>View Docs</button>
           </div>
 
           <div className="lp-hero-stats">
             <div className="lp-stat-item">
-              <span className="lp-stat-value">$45M</span>
+              <span className="lp-stat-value">$4.5M</span>
               <span className="lp-stat-label">TVL</span>
             </div>
             <div className="lp-stat-item">
@@ -248,12 +249,12 @@ export default function Home() {
               <span className="lp-stat-label">Active Merchants</span>
             </div>
             <div className="lp-stat-item">
-              <span className="lp-stat-value">99.9%</span>
+              <span className="lp-stat-value">100%</span>
               <span className="lp-stat-label">Gold-Backed</span>
             </div>
             <div className="lp-stat-item">
-              <span className="lp-stat-value">$12.4M</span>
-              <span className="lp-stat-label">Gold Issued</span>
+              <span className="lp-stat-value">650K</span>
+              <span className="lp-stat-label">Gold Staked</span>
             </div>
           </div>
         </div>
@@ -270,7 +271,7 @@ export default function Home() {
             </span>
           </h2>
           <p className="lp-section-subtitle">
-            Trillions of dollars in loyalty points sit dormant — expiring, locked, and worthless.
+            Trillions of dollars in loyalty points sit dormant expiring, locked, and worthless.
             The system is broken by design.
           </p>
         </div>
@@ -320,8 +321,8 @@ export default function Home() {
       </section>
 
       {/* ── TRANSPARENCY ── */}
-      <section id="transparency" className="lp-section lp-container" style={{ paddingTop: "80px" }}>
-        <div className="lp-section-header">
+      <section id="transparency" className="lp-container lp-section-transparency">
+        <div className="lp-transparency-section-header">
           <span className="lp-eyebrow">Verified On-Chain</span>
           <h2 className="lp-section-title">
             Protocol <span className="lp-serif-italic">Transparency</span>
@@ -344,18 +345,19 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="lp-protocol-details">
+        <div className="lp-transparency-protocol-details">
           <div>
             <h3 className="lp-proof-title">Proof of Reserves</h3>
             <p className="lp-proof-text">
               Every token issued by loyalty.gold is backed 1:1 by physical gold bars stored in audited Swiss vaults.
-              Smart contracts enforce solvency at the protocol level — issuance is impossible without verified physical backing.
+              Reserves are live-monitored on-chain via our decentralized reward pool.
             </p>
             <div className="lp-proof-actions">
-              <a href="#" className="lp-btn-primary" style={{ fontSize: "0.75rem", padding: "12px 28px" }}>
-                View Audit Reports
-              </a>
-              <a href="#" className="lp-btn-ghost">Smart Contract ↗</a>
+              <div className="lp-devnet-status">
+                <div className="lp-status-pulse" />
+                <span>Live Devnet Status</span>
+                <a href="https://explorer.solana.com/?cluster=devnet" target="_blank" rel="noopener noreferrer">View Explorer ↗</a>
+              </div>
             </div>
           </div>
           <ul className="lp-detail-list">
@@ -369,7 +371,7 @@ export default function Home() {
       </section>
 
       {/* ── MERCHANT SECTION ── */}
-      <section className="lp-section lp-container" style={{ paddingTop: 0 }}>
+      <section className="lp-section lp-container" style={{ marginTop: "120px" }}>
         <div className="lp-section-header">
           <span className="lp-eyebrow">For Merchants</span>
           <h2 className="lp-section-title">
@@ -473,78 +475,46 @@ export default function Home() {
       <section className="lp-container lp-final-cta">
         <span className="lp-eyebrow" style={{ display: "block", marginBottom: "32px" }}>Get Started</span>
         <h2 className="lp-gold-gradient-text">
-          Loyalty Should Be Wealth.<br />
-          <span className="lp-serif-italic">Not Points.</span>
+          Stop Issuing Points.<br />
+          <span className="lp-serif-italic">Start Issuing Gold.</span>
         </h2>
         <p className="lp-cta-subtext">
           Join 400+ Shopify merchants already rewarding customers with real gold. Setup takes 10 minutes.
         </p>
         <div className="lp-cta-actions">
-          <button className="lp-btn-primary" onClick={handleCTA} style={{ padding: "18px 48px", fontSize: "0.82rem" }}>
+          <button className="lp-btn-primary" onClick={() => router.push("/docs")} style={{ padding: "18px 48px", fontSize: "0.82rem" }}>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            {status === "authenticated" ? "Enter Application" : "Start Rewarding Customers"}
+            Integrate with Shopify
           </button>
-          <a href="#" className="lp-btn-ghost" style={{ padding: "18px 36px" }}>Schedule a Demo</a>
+          <a href="#product" className="lp-btn-ghost" style={{ padding: "18px 36px" }}>How it works</a>
         </div>
-        <p className="lp-cta-trust">No credit card required &nbsp;·&nbsp; Free 30-day trial &nbsp;·&nbsp; Cancel anytime</p>
+        <p className="lp-cta-trust">No credit card required &nbsp;·&nbsp; Withdraw anytime</p>
       </section>
 
       {/* ── FOOTER ── */}
       <footer className="lp-footer lp-container">
-        <div className="lp-footer-grid">
-          <div>
-            <a className="lp-footer-brand-logo" href="#">
-              <div className="lp-logo-icon" />
-              loyalty.gold
-            </a>
-            <p className="lp-footer-tagline">
-              The universal infrastructure layer for on-chain gold rewards. Turning customer loyalty into real, lasting wealth.
-            </p>
-            <div className="lp-footer-social">
-              <a href="#">𝕏</a>
-              <a href="#">in</a>
-              <a href="#">⌘</a>
-            </div>
-          </div>
-          <div>
-            <div className="lp-footer-col-title">Product</div>
-            <div className="lp-footer-col-links">
-              <a href="#">How It Works</a>
-              <a href="#">Merchant Dashboard</a>
-              <a href="#">Shopify Plugin</a>
-              <a href="#">Pricing</a>
-              <a href="#">Changelog</a>
-            </div>
-          </div>
-          <div>
-            <div className="lp-footer-col-title">Protocol</div>
-            <div className="lp-footer-col-links">
-              <a href="#">Transparency</a>
-              <a href="#">Audit Reports</a>
-              <a href="#">Smart Contract</a>
-              <a href="#">Token Standard</a>
-              <a href="#">Ecosystem</a>
-            </div>
-          </div>
-          <div>
-            <div className="lp-footer-col-title">Company</div>
-            <div className="lp-footer-col-links">
-              <a href="#">About</a>
-              <a href="#">Blog</a>
-              <a href="#">Docs</a>
-              <a href="#">Support</a>
-              <a href="#">Careers</a>
-            </div>
-          </div>
-        </div>
         <div className="lp-footer-bottom">
-          <span>© 2024 Loyalty Gold Protocol, Inc. All rights reserved.</span>
-          <div className="lp-footer-links">
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Service</a>
-            <a href="#">Cookie Settings</a>
+          <div className="lp-footer-left">
+            <span>© 2026 Loyalty Gold Protocol</span>
+            <div className="lp-footer-links">
+              <a href="#">Privacy</a>
+              <a href="#">Terms</a>
+            </div>
+          </div>
+          
+          <div className="lp-powered-by">
+            <span className="lp-powered-text">Powered by</span>
+            <div className="lp-partner-logos">
+              <div className="lp-partner-item">
+                <img src="/oro.svg" alt="ORO" className="lp-partner-logo oro" />
+              </div>
+              <div className="lp-partner-divider" />
+              <div className="lp-partner-item">
+                <img src="/grail.svg" alt="Grail" className="lp-partner-logo grail" />
+              </div>
+            </div>
           </div>
         </div>
       </footer>

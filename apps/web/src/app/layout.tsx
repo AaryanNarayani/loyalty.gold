@@ -40,7 +40,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <link rel="icon" href="/lg.png" sizes="any" type="image/png" />
-      <body className={`${instrumentSans.variable} ${inter.variable} ${playfair.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
+      <body className={`${instrumentSans.variable} ${inter.variable} ${playfair.variable} ${jetbrainsMono.variable} font-sans antialiased`} style={{backgroundColor: 'black'}}>
         <Providers>{children}</Providers>
       </body>
     </html>
