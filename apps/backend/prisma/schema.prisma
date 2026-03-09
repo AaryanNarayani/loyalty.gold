@@ -38,7 +38,7 @@ model User {
   id                  String   @id @default(uuid())
   email               String   @unique
   kycHash             String   @unique
-  walletAddress       String   @unique
+  walletAddress       String   
   encryptedPrivateKey String
   userPda             String?
   balanceGold         Float    @default(0.0)
