@@ -203,3 +203,50 @@
         filter: drop-shadow(0 0 10px rgba(184, 150, 63, 0.2));
     }
 }
+
+/* =============================================
+   MOBILE RESPONSIVENESS (MAX-WIDTH: 768px)
+   ============================================= */
+@media (max-width: 768px) {
+    .ob-wrapper {
+        padding: 1.5rem 1rem;
+    }
+
+    .ob-brand {
+        margin-bottom: 2rem;
+        font-size: 1.25rem;
+    }
+
+    .ob-header {
+        margin-bottom: 2rem;
+    }
+
+    .ob-title {
+        font-size: 2rem;
+    }
+
+    .ob-subtitle {
+        font-size: 1rem;
+    }
+
+    .ob-cards {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .ob-card {
+        padding: 24px;
+    }
+
+    .ob-icon-wrapper {
+        margin-bottom: 1rem;
+    }
+
+    .ob-card-title {
+        font-size: 1.25rem;
+    }
+
+    .ob-helper {
+        margin-top: 2rem;
+    }
+}

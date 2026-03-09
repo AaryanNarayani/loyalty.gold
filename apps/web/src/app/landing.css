@@ -1431,6 +1431,7 @@
     color: #0c0f0d;
     position: relative;
     border-top: 1px solid rgba(0, 0, 0, 0.05);
+    overflow: hidden;
 }
 
 .lp-faq-wrapper::before {
@@ -1477,4 +1478,170 @@
 .lp-cta-wrapper {
     background: linear-gradient(180deg, var(--bg-deep) 0%, rgba(6, 90, 18, 0.15) 50%, var(--bg-deep) 100%);
     position: relative;
+}
+
+/* =============================================
+   MOBILE RESPONSIVENESS (MAX-WIDTH: 768px)
+   ============================================= */
+@media (max-width: 768px) {
+    .lp-container {
+        padding: 0 24px;
+    }
+
+    .lp-final-cta {
+        margin-top: 100px;
+        margin-bottom: 120px;
+    }
+
+    .lp-eco-divider {
+        display: none;
+    }
+
+    .lp-footer {
+        margin-bottom: 30px;
+    }
+
+    .lp-benefits-list {
+        margin-bottom: 100px;
+    }
+
+    /* Nav */
+    .lp-nav.state-0 {
+        padding: 16px 24px;
+    }
+
+    .lp-section-header {
+        margin-top: 100px;
+    }
+
+    .lp-nav-links {
+        display: none;
+        /* Hide standard links on mobile */
+    }
+
+    .lp-nav.state-1 {
+        padding: 8px 12px;
+        width: calc(100% - 24px);
+    }
+
+    .lp-btn-nav {
+        padding: 8px 12px;
+        font-size: 0.65rem;
+    }
+
+    /* Hero */
+    .lp-hero {
+        padding-top: 100px;
+    }
+
+    .lp-hero-title {
+        font-size: clamp(2.5rem, 10vw, 3.5rem);
+    }
+
+    .lp-hero-desc {
+        font-size: 1rem;
+        padding: 0 12px;
+        margin-bottom: 32px;
+    }
+
+    .lp-hero-actions {
+        flex-direction: column;
+        width: 100%;
+        max-width: 300px;
+        gap: 12px;
+    }
+
+    .lp-hero-actions button,
+    .lp-hero-actions a {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .lp-hero-stats {
+        flex-direction: column;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .lp-stat-item {
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 16px 20px;
+    }
+
+    .lp-stat-item:last-child {
+        border-bottom: none;
+    }
+
+    /* Sections */
+    .lp-section-title {
+        font-size: clamp(1.8rem, 8vw, 2.2rem);
+    }
+
+    /* Problem Grid */
+    .lp-problem-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Flow Grid */
+    .lp-flow-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    /* Transparency Section */
+    .lp-section-transparency {
+        padding-top: 60px;
+        padding-bottom: 60px;
+    }
+
+    .lp-transparency-section-header {
+        padding: 20px 0;
+        margin-bottom: 40px;
+    }
+
+    .lp-transparency-section-title {
+        padding: 0 16px;
+    }
+
+    .lp-transparency-section-subtitle {
+        padding: 0 16px;
+    }
+
+    .lp-transparency-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .lp-transparency-protocol-details {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    /* Merchant Grid */
+    .lp-merchant-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    /* Ecosystem */
+    .lp-ecosystem-logos {
+        flex-direction: column;
+        gap: 32px;
+    }
+
+    /* Footer */
+    .lp-footer-bottom {
+        flex-direction: column;
+        gap: 32px;
+        text-align: center;
+    }
+
+    .lp-footer-left {
+        align-items: center;
+    }
+
+    .lp-partner-logos {
+        justify-content: center;
+    }
 }

@@ -106,10 +106,8 @@ router.post('/init', requireAuth, async (req: Request, res: Response) => {
     const kycHash = KycService.generateHash(email)
     console.log(`[User API Init] Generated KYC hash: ${kycHash}`);
 
-    const user = await prisma.user.upsert({
-      where: { email },
-      update: {},
-      create: {
+    const user = await prisma.user.create({
+      data: {
         email,
         walletAddress: '',
         encryptedPrivateKey: '',
