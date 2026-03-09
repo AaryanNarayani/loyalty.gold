@@ -574,18 +574,17 @@
 .lp-stat-value {
     font-family: var(--font-serif-lp);
     font-size: 1.6rem;
-    color: var(--gold-pale);
+    color: var(--lp-text-primary);
     letter-spacing: -0.02em;
     display: block;
     margin-bottom: 4px;
 }
 
 .lp-stat-label {
-    font-size: 0.7rem;
+    font-size: 0.5rem;
     font-weight: 500;
-    letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--lp-text-secondary);
+    color: var(--gold-pale);
 }
 
 /* =============================================
@@ -604,6 +603,7 @@
     margin-bottom: 72px;
     text-align: center;
     padding: 40px;
+    object-fit: cover;
 }
 
 .lp-eyebrow {
@@ -1485,6 +1485,7 @@
    ============================================= */
 @media (max-width: 768px) {
     .lp-container {
+        margin-top: 100px;
         padding: 0 24px;
     }
 
@@ -1558,24 +1559,36 @@
     }
 
     .lp-hero-stats {
-        flex-direction: column;
+        flex-direction: row;
         width: 100%;
-        max-width: 300px;
+        max-width: 3000px;
+        margin-bottom: 100px;
+        color: var(--gold-deep);
     }
 
     .lp-stat-item {
         border-right: none;
         border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         padding: 16px 20px;
+        color: var(--gold-deep);
     }
 
     .lp-stat-item:last-child {
         border-bottom: none;
     }
 
+    .lp-section-transparency {
+        background-image: url("/mobile_bg.png");
+        background-size: contain;
+        background-position: center;
+        backdrop-filter: blur(50px);
+        -webkit-backdrop-filter: blur(50px);
+    }
+
     /* Sections */
     .lp-section-title {
         font-size: clamp(1.8rem, 8vw, 2.2rem);
+        color: var(--gold-deep);
     }
 
     /* Problem Grid */
