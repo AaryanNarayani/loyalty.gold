@@ -1,0 +1,24 @@
+1. Onboard as Merchant , Have some share of gold in your pool.
+
+2. Go to API & Webhook secrets section and make a secret key.
+
+3. paste this in a script.sh replace the fields and run it.s
+
+PAYLOAD='{"id":"test_123","email":"[EMAIL_ADDRESS]","total_price":"250.00"}'
+
+SECRET="[YOUR_SECRET_KEY]"
+
+# HMAC SIGNATURE MAIN
+SIGNATURE=$(echo -n "$PAYLOAD" | openssl dgst -sha256 -hmac "$SECRET" -binary | base64)
+
+curl -X POST https://loyaltygold-production.up.railway.app/api/webhooks/shopify/order \
+  -H "Content-Type: application/json" \
+  -H "X-Shop-Domain: [YOUR_SHOP_DOMAIN]" \
+  -H "X-Oro-Signature: $SIGNATURE" \
+  -d "$PAYLOAD"
+
+
+Note: You can change the payload to test with different values, 
+Email address can be of the customer , doesn't have to be authenticated to getloyalty.gold.
+We create a wallet for the customer if it doesn't exist and send the reward.
+To see the reward recieved login with the customers gmail.

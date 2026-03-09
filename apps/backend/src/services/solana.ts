@@ -291,28 +291,36 @@ export class SolanaService {
 
         // ── Step 1: Fetch live gold price ───────────────────────────────────────
         console.log(`[ConvertUsdcToGold] Fetching gold price from tradebook...`);
-        const priceRes = await fetch(
-            "https://oro-tradebook-devnet.up.railway.app/api/trading/estimate/buy",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "x-api-key": process.env.ORO_EXECUTING_API_KEY || "",
-                },
-                body: JSON.stringify({ goldAmount: 1 }) // fetch price per 1 oz
+        let goldPricePerOunce = 5128.07; // Fallback value
+        try {
+            const priceRes = await fetch(
+                "https://oro-tradebook-devnet.up.railway.app/api/trading/estimate/buy",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "x-api-key": process.env.ORO_EXECUTING_API_KEY || "",
+                    },
+                    body: JSON.stringify({ goldAmount: 1 }) // fetch price per 1 oz
+                }
+            );
+            if (priceRes.ok) {
+                const priceData = await priceRes.json() as {
+                    success: boolean;
+                    data: { goldPricePerOunce: number };
+                };
+                if (priceData.success && priceData.data?.goldPricePerOunce) {
+                    goldPricePerOunce = priceData.data.goldPricePerOunce;
+                } else {
+                    console.warn("[ConvertUsdcToGold] Tradebook returned success=false, using fallback price");
+                }
+            } else {
+                console.warn(`[ConvertUsdcToGold] Tradebook price fetch failed with status ${priceRes.status}, using fallback price`);
             }
-        );
-        if (!priceRes.ok) {
-            throw new Error(`Tradebook price fetch failed: ${priceRes.status} ${await priceRes.text()}`);
+        } catch (error) {
+            console.error("[ConvertUsdcToGold] Error fetching gold price, using fallback:", error);
         }
-        const priceData = await priceRes.json() as {
-            success: boolean;
-            data: { goldPricePerOunce: number };
-        };
-        if (!priceData.success) {
-            throw new Error("Tradebook returned success=false when fetching gold price");
-        }
-        const goldPricePerOunce = priceData.data.goldPricePerOunce;
+
         const goldAmountOz = amount / goldPricePerOunce;
         console.log(`[ConvertUsdcToGold] Gold price: $${goldPricePerOunce}/oz → ${goldAmountOz.toFixed(9)} oz for ${amount} USDC`);
 
